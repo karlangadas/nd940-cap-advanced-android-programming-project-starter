@@ -3,5 +3,7 @@
     <dimen name="default_padding">8dp</dimen>
 
     <!-- TODO: Add necessary dimension values -->s
-
+    <dimen name="medium_padding">16dp</dimen>
+    <dimen name="small_padding">4dp</dimen>
+    <dimen name="ic_size">40dp</dimen>
 </resources>
