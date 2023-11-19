@@ -27,7 +27,7 @@ class RepresentativeViewModel: ViewModel() {
         "MN", "MS", "MO", "MT", "NE", "NV", "NJ", "NY", "NH", "NM", "OH", "OK", "OR", "PA",
         "RI", "TN", "TX", "UT", "VT", "VT", "VA", "WV", "WA", "WI", "WY")
 
-    fun fetchRepresentatives(addressStringFormat: String) {
+    private fun fetchRepresentatives(addressStringFormat: String) {
         viewModelScope.launch {
             val results: RepresentativeResponse = repository.refreshRepresentatives(addressStringFormat)
             _representatives.value = results.offices.flatMap { office ->
@@ -43,7 +43,7 @@ class RepresentativeViewModel: ViewModel() {
         _state.value = address.state
         _zip.value = address.zip
 
-//        fetchRepresentatives(address.toFormattedString())
+        fetchRepresentatives(address.toFormattedString())
     }
 
     //TODO: Create function to get address from individual fields

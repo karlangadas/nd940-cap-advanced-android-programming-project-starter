@@ -201,7 +201,7 @@ class DetailFragment : Fragment() {
                 }
             }
         } catch (e: SecurityException) {
-            Timber.tag(TAG).e(e, e.message)
+            Timber.tag(TAG).e(e)
         }
     }
 
