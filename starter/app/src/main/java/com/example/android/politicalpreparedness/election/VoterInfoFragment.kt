@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.android.politicalpreparedness.R
 import com.example.android.politicalpreparedness.databinding.FragmentElectionBinding
 import com.example.android.politicalpreparedness.databinding.FragmentVoterInfoBinding
 import com.example.android.politicalpreparedness.network.models.Division
@@ -32,6 +33,15 @@ class VoterInfoFragment : Fragment() {
         viewModel = ViewModelProvider(this)[VoterInfoViewModel::class.java]
 
         binding.viewModel = viewModel
+
+        viewModel.saved.observe(viewLifecycleOwner) { saved ->
+            if (saved) {
+                binding.followButton.setText(R.string.unfollow_election)
+            }
+            else {
+                binding.followButton.setText(R.string.follow_election)
+            }
+        }
 
         viewModel.voterInfo.observe(viewLifecycleOwner) { voterInfo ->
             val state = voterInfo?.state
@@ -96,8 +106,15 @@ class VoterInfoFragment : Fragment() {
             }
         }
 
-        // TODO: Handle save button UI state
-        // TODO: cont'd Handle save button clicks
+        binding.followButton.setOnClickListener {
+            viewModel.voterInfo.value?.also { voterInfo ->
+                if (viewModel.saved.value == true) {
+                    viewModel.removeElection(voterInfo)
+                } else {
+                    viewModel.saveElection(voterInfo)
+                }
+            }
+        }
         return binding.root
     }
 

@@ -25,6 +25,6 @@
   <string name="location_error">Error when getting location</string>
   <string name="location_required_error">Location services must be enabled to use the app</string>
   <string name="follow_election">Follow election</string>
-
+  <string name="unfollow_election">Unfollow election</string>
 
 </resources>

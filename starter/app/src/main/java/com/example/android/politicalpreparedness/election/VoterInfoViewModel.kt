@@ -1,17 +1,11 @@
 package com.example.android.politicalpreparedness.election
 
 import android.app.Application
-import android.content.Intent
-import android.net.Uri
-import android.view.View
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.android.politicalpreparedness.database.ElectionDao
 import com.example.android.politicalpreparedness.database.ElectionDatabase
-import com.example.android.politicalpreparedness.network.models.ElectionResponse
 import com.example.android.politicalpreparedness.network.models.VoterInfoResponse
 import com.example.android.politicalpreparedness.repository.ElectionRepository
 import kotlinx.coroutines.launch
@@ -24,12 +18,31 @@ class VoterInfoViewModel(application: Application): AndroidViewModel(application
     val voterInfo: LiveData<VoterInfoResponse>
         get() = _voterInfo
 
+    private val _saved = MutableLiveData<Boolean>()
+    val saved: LiveData<Boolean>
+        get() = _saved
+
     fun loadVoterInfo(
         address: String,
         electionId: Int
     ) {
         viewModelScope.launch {
-            _voterInfo.value = electionsRepository.getVoterInfo(address, electionId)
+            _voterInfo.value = electionsRepository.fetchVoterInfo(address, electionId)
+            _saved.value = electionsRepository.isElectionSavedLocally(electionId)
+        }
+    }
+
+    fun removeElection(voterInfo: VoterInfoResponse) {
+        viewModelScope.launch {
+            electionsRepository.removeElectionById(voterInfo.election.id)
+            _saved.value = false
+        }
+    }
+
+    fun saveElection(voterInfo: VoterInfoResponse) {
+        viewModelScope.launch {
+            electionsRepository.saveElection(voterInfo.election)
+            _saved.value = true
         }
     }
 
