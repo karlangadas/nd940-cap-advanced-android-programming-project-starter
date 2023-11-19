@@ -34,6 +34,14 @@ class VoterInfoFragment : Fragment() {
 
         binding.viewModel = viewModel
 
+        viewModel.loading.observe(viewLifecycleOwner) {
+            if (it == true) {
+                binding.progress.visibility = View.VISIBLE
+            } else {
+                binding.progress.visibility = View.GONE
+            }
+        }
+
         viewModel.saved.observe(viewLifecycleOwner) { saved ->
             if (saved) {
                 binding.followButton.setText(R.string.unfollow_election)

@@ -26,10 +26,20 @@ class ElectionsViewModel(application: Application): AndroidViewModel(application
     val savedElections: LiveData<List<Election>>
         get() = _savedElections
 
+    private val _loading = MutableLiveData<Boolean>()
+    val loading : LiveData<Boolean>
+    get() = _loading
+
+    init {
+        _loading.value = false
+    }
+
     fun loadElections() {
         viewModelScope.launch {
+            _loading.value = true
             refreshUpcomingElections()
             getSavedElections()
+            _loading.value = false
         }
     }
 

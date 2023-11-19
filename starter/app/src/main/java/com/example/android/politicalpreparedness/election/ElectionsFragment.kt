@@ -50,15 +50,45 @@ class ElectionsFragment: Fragment() {
         binding.upcomingElectionsRecycler.adapter = upcomingElectionsAdapter
         binding.savedElectionsRecycler.adapter = savedElectionsAdapter
 
+        viewModel.loading.observe(viewLifecycleOwner) {
+            if (it == true) {
+                binding.progress1.visibility = View.VISIBLE
+                binding.progress2.visibility = View.VISIBLE
+                binding.upcomingElectionsRecycler.visibility = View.GONE
+                binding.savedElectionsRecycler.visibility = View.GONE
+            } else {
+                binding.progress1.visibility = View.GONE
+                binding.progress2.visibility = View.GONE
+                binding.upcomingElectionsRecycler.visibility = View.VISIBLE
+                binding.savedElectionsRecycler.visibility = View.VISIBLE
+            }
+        }
+
         viewModel.upcomingElections.observe(viewLifecycleOwner) {
             it?.let {
                 upcomingElectionsAdapter.submitList(it.elections)
+                if (it.elections.isNotEmpty()) {
+                    binding.upcomingElectionsRecycler.visibility =  View.VISIBLE
+                    binding.noResults1.visibility =  View.GONE
+                }
+                else {
+                    binding.noResults1.visibility =  View.VISIBLE
+                    binding.upcomingElectionsRecycler.visibility = View.GONE
+                }
             }
         }
 
         viewModel.savedElections.observe(viewLifecycleOwner) {
             it?.let {
                 savedElectionsAdapter.submitList(it)
+                if (it.isNotEmpty()) {
+                    binding.savedElectionsRecycler.visibility = View.VISIBLE
+                    binding.noResults2.visibility =  View.GONE
+                }
+                else {
+                    binding.noResults2.visibility =  View.VISIBLE
+                    binding.savedElectionsRecycler.visibility = View.GONE
+                }
             }
         }
 

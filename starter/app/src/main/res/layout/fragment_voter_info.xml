@@ -8,6 +8,19 @@
     android:layout_height="match_parent"
     tools:context="com.example.android.politicalpreparedness.MainActivity">
 
+    <ProgressBar
+      android:id="@+id/progress"
+      style="?android:attr/progressBarStyleLarge"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      android:visibility="visible"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintBottom_toBottomOf="parent"
+      />
+
     <TextView
       android:id="@+id/election_date"
       android:layout_width="wrap_content"

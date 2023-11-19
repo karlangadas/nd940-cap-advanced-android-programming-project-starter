@@ -22,13 +22,23 @@ class VoterInfoViewModel(application: Application): AndroidViewModel(application
     val saved: LiveData<Boolean>
         get() = _saved
 
+    private val _loading = MutableLiveData<Boolean>()
+    val loading : LiveData<Boolean>
+        get() = _loading
+
+    init {
+        _loading.value = false
+    }
+
     fun loadVoterInfo(
         address: String,
         electionId: Int
     ) {
         viewModelScope.launch {
+            _loading.value = true
             _voterInfo.value = electionsRepository.fetchVoterInfo(address, electionId)
             _saved.value = electionsRepository.isElectionSavedLocally(electionId)
+            _loading.value = false
         }
     }
 
