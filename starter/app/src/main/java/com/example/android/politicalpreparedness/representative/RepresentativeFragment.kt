@@ -2,8 +2,10 @@ package com.example.android.politicalpreparedness.representative
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.Location
@@ -14,6 +16,7 @@ import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -24,8 +27,11 @@ import com.example.android.politicalpreparedness.databinding.FragmentRepresentat
 import com.example.android.politicalpreparedness.databinding.FragmentVoterInfoBinding
 import com.example.android.politicalpreparedness.election.ElectionsViewModel
 import com.example.android.politicalpreparedness.network.models.Address
+import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.material.snackbar.Snackbar
 import timber.log.Timber
 import java.util.Locale
@@ -90,7 +96,7 @@ class DetailFragment : Fragment() {
     @SuppressLint("MissingPermission")
     private fun checkLocationPermissionsAndUseMyLocation() {
         if (isPermissionGranted()) {
-             getLocation()
+            checkDeviceLocationSettingsAndGetLocation()
         } else {
             requestFineLocationPermission.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
@@ -102,7 +108,61 @@ class DetailFragment : Fragment() {
             Manifest.permission.ACCESS_FINE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
 
-    private fun getLocation() {
+    private val locationServiceEnabledRequestLauncher = registerForActivityResult(
+        ActivityResultContracts.StartIntentSenderForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            checkDeviceLocationSettingsAndGetLocation()
+        }
+        else {
+            Snackbar.make(
+                requireView(),
+                R.string.location_required_error, Snackbar.LENGTH_INDEFINITE
+            ).setAction(android.R.string.ok) {
+                checkDeviceLocationSettingsAndGetLocation()
+            }.show()
+        }
+    }
+
+    private fun checkDeviceLocationSettingsAndGetLocation() {
+        // create a location request
+        val locationRequest = LocationRequest.create().apply {
+            priority = LocationRequest.PRIORITY_LOW_POWER
+        }
+        // create location setting request builder
+        val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
+        val settingsClient = LocationServices.getSettingsClient(requireActivity())
+        val locationSettingsResponseTask =
+            settingsClient.checkLocationSettings(builder.build())
+
+        locationSettingsResponseTask.addOnFailureListener { exception ->
+            // if location settings are not satisfied
+            if (exception is ResolvableApiException) {
+                // but this can be fixed by showing the user a dialog.
+                try {
+                    locationServiceEnabledRequestLauncher
+                        .launch(IntentSenderRequest.Builder(exception.resolution).build())
+                } catch (sendEx: IntentSender.SendIntentException) {
+                    Timber.tag(TAG)
+                        .d("Error getting location settings resolution: ${sendEx.message}")
+                }
+            } else {
+                // present a snackbar that alerts the user that location needs to be enabled
+                Snackbar.make(
+                    requireView(),
+                    R.string.location_required_error, Snackbar.LENGTH_INDEFINITE
+                ).setAction(android.R.string.ok) {
+                    checkDeviceLocationSettingsAndGetLocation()
+                }.show()
+            }
+        }
+        locationSettingsResponseTask.addOnCompleteListener {
+            if (it.isSuccessful) {
+                getLocation()
+            }
+        }
+    }
+     private fun getLocation() {
         try {
             if (isPermissionGranted()) {
                 val locationResult = fusedLocationProviderClient.lastLocation
@@ -136,12 +196,19 @@ class DetailFragment : Fragment() {
         val geocoder = Geocoder(requireContext(), Locale.getDefault())
         return geocoder.getFromLocation(location.latitude, location.longitude, 1)
             ?.map { address ->
+//                Address(
+//                    address.thoroughfare?: return null,
+//                    address.subThoroughfare,
+//                    address.locality?: return null,
+//                    address.adminArea?: return null,
+//                    address.postalCode?: return null)
+                // todo (kpedraza): Remove
                 Address(
-                    address.thoroughfare?: "",
-                    address.subThoroughfare,
-                    address.locality?: "",
-                    address.adminArea?: "",
-                    address.postalCode?: "")
+                    "Unnamed Road",
+                    null,
+                    "Magnum",
+                    "OK",
+                    "73554")
             }
                 ?.first()
     }
