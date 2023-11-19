@@ -99,10 +99,12 @@ class DetailFragment : Fragment() {
                 representativedAdapter.submitList(it)
             }
         }
-//
-//        //TODO: Establish button listeners for field and location search
+
         binding.buttonLocation.setOnClickListener {
             checkLocationPermissionsAndUseMyLocation()
+        }
+        binding.buttonSearch.setOnClickListener {
+            checkLocationPermissionsAndUseFields()
         }
         return binding.root
     }
@@ -213,6 +215,18 @@ class DetailFragment : Fragment() {
         } catch (e: SecurityException) {
             Timber.tag(TAG).e(e)
         }
+    }
+
+    private fun checkLocationPermissionsAndUseFields() {
+        val address = Address(
+            binding.addressLine1.text.toString(),
+            binding.addressLine2.text.toString(),
+            binding.city.text.toString(),
+            binding.state.selectedItem.toString(),
+            binding.zip.text.toString()
+            )
+        hideKeyboard()
+        viewModel.setAddressFromLocation(address)
     }
 
     private fun geoCodeLocation(location: Location): Address? {
