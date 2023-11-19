@@ -16,6 +16,9 @@ class RepresentativeViewModel: ViewModel() {
     private val repository = RepresentativeRepository()
 
     private val _representatives = MutableLiveData<List<Representative>>()
+    val representatives: LiveData<List<Representative>>
+        get() = _representatives
+
     val _addressLine1 = MutableLiveData<String>()
     val _addressLine2 = MutableLiveData<String>()
     val _city = MutableLiveData<String>()

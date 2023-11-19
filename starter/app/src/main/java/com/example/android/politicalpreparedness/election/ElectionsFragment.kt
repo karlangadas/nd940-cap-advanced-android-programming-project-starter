@@ -29,7 +29,7 @@ class ElectionsFragment: Fragment() {
         val binding = FragmentElectionBinding.inflate(inflater)
         binding.lifecycleOwner = this
 
-        viewModel = ViewModelProvider(this).get(ElectionsViewModel::class.java)
+        viewModel = ViewModelProvider(this)[ElectionsViewModel::class.java]
 
         binding.viewModel = viewModel
 
