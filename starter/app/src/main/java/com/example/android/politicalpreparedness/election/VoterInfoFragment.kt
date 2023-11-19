@@ -40,6 +40,7 @@ class VoterInfoFragment : Fragment() {
                 binding.votingLocations.visibility = View.GONE
                 binding.ballotInformation.visibility = View.GONE
                 binding.stateCorrespondenceHeader.visibility = View.GONE
+                binding.followButton.visibility = View.GONE
                 return@observe
             }
             val body = state[0].electionAdministrationBody
@@ -47,6 +48,7 @@ class VoterInfoFragment : Fragment() {
             body.correspondenceAddress?.also {
                 binding.stateCorrespondenceHeader.visibility = View.VISIBLE
             }
+            binding.followButton.visibility = View.VISIBLE
 
             val electionInfoUrl = body.electionInfoUrl
             binding.electionInformation.apply {

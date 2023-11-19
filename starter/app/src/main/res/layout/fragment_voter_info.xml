@@ -95,7 +95,21 @@
       app:title="@{viewModel.voterInfo.election.name}"
       tools:title="Google Test Election (Future)"/>
 
-    <!-- TODO: Add button to save election to Room -->
+    <Button
+      android:id="@+id/follow_button"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginHorizontal="@dimen/medium_padding"
+      android:layout_marginBottom="@dimen/medium_padding"
+      android:background="@color/colorPrimaryDark"
+      android:textColor="@color/white"
+      android:text="@string/follow_election"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintBottom_toBottomOf="parent"
+      android:visibility="gone"
+      tools:visibility="visible"
+      />
 
   </androidx.constraintlayout.widget.ConstraintLayout>
 
