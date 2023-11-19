@@ -6,11 +6,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.android.politicalpreparedness.database.ElectionDatabase
+import com.example.android.politicalpreparedness.network.isOnline
 import com.example.android.politicalpreparedness.network.models.VoterInfoResponse
 import com.example.android.politicalpreparedness.repository.ElectionRepository
 import kotlinx.coroutines.launch
 
-class VoterInfoViewModel(application: Application): AndroidViewModel(application) {
+class VoterInfoViewModel(private val application: Application): AndroidViewModel(application) {
     private val database = ElectionDatabase.getInstance(application)
     private val electionsRepository = ElectionRepository(database)
 
@@ -35,6 +36,9 @@ class VoterInfoViewModel(application: Application): AndroidViewModel(application
         electionId: Int
     ) {
         viewModelScope.launch {
+            if (!isOnline(application)) {
+                return@launch
+            }
             _loading.value = true
             _voterInfo.value = electionsRepository.fetchVoterInfo(address, electionId)
             _saved.value = electionsRepository.isElectionSavedLocally(electionId)

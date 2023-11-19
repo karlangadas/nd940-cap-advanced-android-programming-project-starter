@@ -1,16 +1,19 @@
 package com.example.android.politicalpreparedness.representative
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.android.politicalpreparedness.network.isOnline
 import com.example.android.politicalpreparedness.network.models.Address
 import com.example.android.politicalpreparedness.network.models.RepresentativeResponse
 import com.example.android.politicalpreparedness.repository.RepresentativeRepository
 import com.example.android.politicalpreparedness.representative.model.Representative
 import kotlinx.coroutines.launch
 
-class RepresentativeViewModel: ViewModel() {
+class RepresentativeViewModel(private val application: Application): AndroidViewModel(application) {
 
 
     private val repository = RepresentativeRepository()
@@ -32,6 +35,9 @@ class RepresentativeViewModel: ViewModel() {
 
     private fun fetchRepresentatives(addressStringFormat: String) {
         viewModelScope.launch {
+            if (!isOnline(application)) {
+                return@launch
+            }
             val results: RepresentativeResponse = repository.refreshRepresentatives(addressStringFormat)
             _representatives.value = results.offices.flatMap { office ->
                 office.getRepresentatives(results.officials)

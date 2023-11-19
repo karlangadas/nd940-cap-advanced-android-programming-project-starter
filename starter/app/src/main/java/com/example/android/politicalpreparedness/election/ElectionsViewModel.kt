@@ -8,13 +8,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.android.politicalpreparedness.database.ElectionDatabase
+import com.example.android.politicalpreparedness.network.isOnline
 import com.example.android.politicalpreparedness.network.models.Election
 import com.example.android.politicalpreparedness.network.models.ElectionResponse
 import com.example.android.politicalpreparedness.repository.ElectionRepository
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class ElectionsViewModel(application: Application): AndroidViewModel(application) {
+class ElectionsViewModel(private val application: Application): AndroidViewModel(application) {
     private val database = ElectionDatabase.getInstance(application)
     private val electionsRepository = ElectionRepository(database)
 
@@ -37,7 +38,9 @@ class ElectionsViewModel(application: Application): AndroidViewModel(application
     fun loadElections() {
         viewModelScope.launch {
             _loading.value = true
-            refreshUpcomingElections()
+            if (isOnline(application)) {
+                refreshUpcomingElections()
+            }
             getSavedElections()
             _loading.value = false
         }
