@@ -21,6 +21,14 @@ class VoterInfoFragment : Fragment() {
         VoterInfoFragmentArgs.fromBundle(requireArguments()).argElectionId
     }
 
+    private val state: String by lazy {
+        VoterInfoFragmentArgs.fromBundle(requireArguments()).argState
+    }
+
+    private val country: String by lazy {
+        VoterInfoFragmentArgs.fromBundle(requireArguments()).argCountry
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -128,8 +136,9 @@ class VoterInfoFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // todo: Implement geo
-        val address = "Unnamed Road, Mangum, OK 73554, USA"
+        val state = state.ifEmpty { "CA" } //fallback
+        val country = country.ifEmpty { "USA" } //fallback
+        val address = " , , $state, $country"
         viewModel.loadVoterInfo(address, electionId)
     }
 }

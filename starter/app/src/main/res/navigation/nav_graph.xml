@@ -35,6 +35,12 @@
         <argument
             android:name="arg_election_id"
             app:argType="integer" /> />
+        <argument
+          android:name="arg_state"
+          app:argType="string" /> />
+        <argument
+          android:name="arg_country"
+          app:argType="string" /> />
     </fragment>
 
     <fragment
