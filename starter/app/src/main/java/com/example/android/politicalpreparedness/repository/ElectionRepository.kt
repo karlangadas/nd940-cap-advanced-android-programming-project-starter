@@ -28,4 +28,8 @@ class ElectionRepository(private val database: ElectionDatabase) {
     suspend fun saveElection(election: Election) {
         database.electionDao.insert(election)
     }
+
+    suspend fun savedElections(): List<Election> {
+        return database.electionDao.getElections()
+    }
 }

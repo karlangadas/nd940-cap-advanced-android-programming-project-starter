@@ -56,11 +56,11 @@ class ElectionsFragment: Fragment() {
             }
         }
 
-//        viewModel.savedElections.observe(viewLifecycleOwner) {
-//            it?.let {
-//                adapter.submitList(it)
-//            }
-//        }
+        viewModel.savedElections.observe(viewLifecycleOwner) {
+            it?.let {
+                savedElectionsAdapter.submitList(it)
+            }
+        }
 
         setHasOptionsMenu(true)
 
