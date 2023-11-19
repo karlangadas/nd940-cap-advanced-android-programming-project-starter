@@ -48,7 +48,4 @@ class RepresentativeViewModel: ViewModel() {
 
         fetchRepresentatives(address.toFormattedString())
     }
-
-    //TODO: Create function to get address from individual fields
-
 }
