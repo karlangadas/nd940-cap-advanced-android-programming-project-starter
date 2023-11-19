@@ -37,14 +37,14 @@ class ElectionsFragment: Fragment() {
             findNavController()
                 .navigate(
                     ElectionsFragmentDirections
-                        .actionShowVoterInfo(election.id, election.division))
+                        .actionShowVoterInfo(election.id))
             })
 
         savedElectionsAdapter = ElectionListAdapter(ElectionClick { election ->
             findNavController()
                 .navigate(
                     ElectionsFragmentDirections
-                        .actionShowVoterInfo(election.id, election.division))
+                        .actionShowVoterInfo(election.id))
         })
 
         binding.upcomingElectionsRecycler.adapter = upcomingElectionsAdapter
