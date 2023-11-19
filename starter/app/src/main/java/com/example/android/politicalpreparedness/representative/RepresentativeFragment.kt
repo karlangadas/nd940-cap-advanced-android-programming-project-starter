@@ -233,19 +233,18 @@ class DetailFragment : Fragment() {
         val geocoder = Geocoder(requireContext(), Locale.getDefault())
         return geocoder.getFromLocation(location.latitude, location.longitude, 1)
             ?.map { address ->
-//                Address(
-//                    address.thoroughfare?: return null,
-//                    address.subThoroughfare,
-//                    address.locality?: return null,
-//                    address.adminArea?: return null,
-//                    address.postalCode?: return null)
-                // todo (kpedraza): Remove
                 Address(
-                    "Unnamed Road",
-                    null,
-                    "Magnum",
-                    "OK",
-                    "73554")
+                    address.thoroughfare?: return null,
+                    address.subThoroughfare,
+                    address.locality?: return null,
+                    address.adminArea?: return null,
+                    address.postalCode?: return null)
+//                Address(
+//                    "Unnamed Road",
+//                    null,
+//                    "Magnum",
+//                    "OK",
+//                    "73554")
             }
                 ?.first()
     }
