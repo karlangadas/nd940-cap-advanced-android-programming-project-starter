@@ -15,6 +15,7 @@ import android.provider.Settings
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -81,6 +82,9 @@ class DetailFragment : Fragment() {
 
         fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(requireActivity())
+
+
+        initSpinner()
 //
 //        //TODO: Define and assign Representative adapter
 //
@@ -91,6 +95,15 @@ class DetailFragment : Fragment() {
             checkLocationPermissionsAndUseMyLocation()
         }
         return binding.root
+    }
+
+    //https://www.geeksforgeeks.org/spinner-in-kotlin/
+    private fun initSpinner() {
+        val adapter = ArrayAdapter(
+            requireActivity(),
+            android.R.layout.simple_spinner_item,
+            viewModel.states)
+        binding.state.adapter = adapter
     }
 
     @SuppressLint("MissingPermission")
