@@ -20,7 +20,8 @@
   <string name="address_line_2_hint">Address Line 2</string>
   <string name="city_hint">City</string>
   <string name="zip_hint">Zip</string>
-
+  <string name="permission_denied_explanation">You need to grant location permission in order to select the location.</string>
+  <string name="settings">Settings</string>
   <!-- TODO: Add necessary string values -->
 
 </resources>

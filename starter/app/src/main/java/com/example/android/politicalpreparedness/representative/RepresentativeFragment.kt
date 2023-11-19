@@ -1,17 +1,28 @@
 package com.example.android.politicalpreparedness.representative
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.Location
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.view.*
 import android.view.inputmethod.InputMethodManager
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.android.politicalpreparedness.BuildConfig
+import com.example.android.politicalpreparedness.R
 import com.example.android.politicalpreparedness.databinding.FragmentRepresentativeBinding
 import com.example.android.politicalpreparedness.databinding.FragmentVoterInfoBinding
 import com.example.android.politicalpreparedness.election.ElectionsViewModel
 import com.example.android.politicalpreparedness.network.models.Address
+import com.google.android.material.snackbar.Snackbar
 import java.util.Locale
 
 class DetailFragment : Fragment() {
@@ -19,6 +30,27 @@ class DetailFragment : Fragment() {
     companion object {
         //TODO: Add Constant for Location request
     }
+
+    private val requestFineLocationPermission =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                checkLocationPermissionsAndUseMyLocation()
+            } else {
+                // Permission request cancelled or permission denied.
+                Snackbar.make(
+                    this.requireView(),
+                    R.string.permission_denied_explanation, Snackbar.LENGTH_INDEFINITE
+                )
+                    .setAction(R.string.settings) {
+                        // Displays App settings screen.
+                        startActivity(Intent().apply {
+                            action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                            data = Uri.fromParts("package", BuildConfig.APPLICATION_ID, null)
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        })
+                    }.show()
+            }
+        }
 
     lateinit var viewModel: RepresentativeViewModel
 
@@ -38,27 +70,27 @@ class DetailFragment : Fragment() {
 //        //TODO: Populate Representative adapter
 //
 //        //TODO: Establish button listeners for field and location search
+        binding.buttonLocation.setOnClickListener {
+            checkLocationPermissionsAndUseMyLocation()
+        }
         return binding.root
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        //TODO: Handle location permission result to get location on permission granted
-    }
-
-    private fun checkLocationPermissions(): Boolean {
-        return if (isPermissionGranted()) {
-            true
+    @SuppressLint("MissingPermission")
+    private fun checkLocationPermissionsAndUseMyLocation() {
+        if (isPermissionGranted()) {
+            // save
+            // getLocation()
         } else {
-            //TODO: Request Location permissions
-            false
+            requestFineLocationPermission.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
     }
 
-    private fun isPermissionGranted() : Boolean {
-        //TODO: Check if permission is already granted and return (true = granted, false = denied/other)
-        return true
-    }
+    private fun isPermissionGranted() : Boolean =
+        ContextCompat.checkSelfPermission(
+            requireActivity(),
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
 
     private fun getLocation() {
         //TODO: Get location from LocationServices
