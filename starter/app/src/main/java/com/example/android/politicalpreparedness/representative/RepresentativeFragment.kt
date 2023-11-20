@@ -109,6 +109,11 @@ class DetailFragment : Fragment() {
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.executePendingBindings()
+    }
+
     //https://www.geeksforgeeks.org/spinner-in-kotlin/
     private fun initSpinner() {
         val adapter = ArrayAdapter(
