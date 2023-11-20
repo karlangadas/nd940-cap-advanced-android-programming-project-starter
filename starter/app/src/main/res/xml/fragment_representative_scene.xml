@@ -3,16 +3,6 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:motion="http://schemas.android.com/apk/res-auto">
 
-  <Transition
-    motion:constraintSetEnd="@+id/end"
-    motion:constraintSetStart="@+id/start"
-    motion:duration="300"
-    motion:motionInterpolator="linear">
-    <OnSwipe
-      motion:dragDirection="dragUp"
-      motion:touchAnchorId="@+id/form" />
-  </Transition>
-
   <ConstraintSet android:id="@+id/start">
     <Constraint
       android:id="@+id/form"
@@ -28,4 +18,14 @@
       android:layout_height="0dp"
       motion:layout_constraintTop_toTopOf="parent"/>
   </ConstraintSet>
+
+  <Transition
+    android:id="@+id/scroll_transition"
+    motion:constraintSetEnd="@id/end"
+    motion:constraintSetStart="@id/start"
+    motion:motionInterpolator="linear">
+    <OnSwipe
+      motion:dragDirection="dragUp"
+      motion:touchAnchorId="@+id/form" />
+  </Transition>
 </MotionScene>

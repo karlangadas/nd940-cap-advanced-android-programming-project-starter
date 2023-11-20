@@ -46,6 +46,7 @@ class DetailFragment : Fragment() {
 
     companion object {
         private const val TAG = "DetailFragment"
+        private const val MOTION_LAYOUT_STATE_KEY = "motion_layout_state"
     }
 
     private val requestFineLocationPermission =
@@ -112,11 +113,16 @@ class DetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.executePendingBindings()
+        savedInstanceState?.getBundle(MOTION_LAYOUT_STATE_KEY)?.let { motionLayoutState ->
+            binding.motionLayout.transitionState = motionLayoutState
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        viewModel.saveState()
         super.onSaveInstanceState(outState)
+        viewModel.saveState()
+        outState.putBundle(MOTION_LAYOUT_STATE_KEY, binding.motionLayout.transitionState)
+        hideKeyboard()
     }
 
     //https://www.geeksforgeeks.org/spinner-in-kotlin/
