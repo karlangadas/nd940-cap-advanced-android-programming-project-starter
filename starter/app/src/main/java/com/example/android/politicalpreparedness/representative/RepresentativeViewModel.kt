@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.example.android.politicalpreparedness.network.isOnline
 import com.example.android.politicalpreparedness.network.models.Address
@@ -13,7 +13,7 @@ import com.example.android.politicalpreparedness.repository.RepresentativeReposi
 import com.example.android.politicalpreparedness.representative.model.Representative
 import kotlinx.coroutines.launch
 
-class RepresentativeViewModel(private val application: Application): AndroidViewModel(application) {
+class RepresentativeViewModel(private val application: Application, private val state: SavedStateHandle): AndroidViewModel(application) {
 
 
     private val repository = RepresentativeRepository()
@@ -32,6 +32,12 @@ class RepresentativeViewModel(private val application: Application): AndroidView
         "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI",
         "MN", "MS", "MO", "MT", "NE", "NV", "NJ", "NY", "NH", "NM", "OH", "OK", "OR", "PA",
         "RI", "TN", "TX", "UT", "VT", "VT", "VA", "WV", "WA", "WI", "WY")
+
+    init {
+        _representatives.value =
+            state.get<List<Representative>>(
+                REPRESENTATIVES)
+    }
 
     private fun fetchRepresentatives(addressStringFormat: String) {
         viewModelScope.launch {
@@ -53,5 +59,13 @@ class RepresentativeViewModel(private val application: Application): AndroidView
         _zip.value = address.zip
 
         fetchRepresentatives(address.toFormattedString())
+    }
+
+    fun saveState() {
+        state[REPRESENTATIVES] = _representatives.value
+    }
+
+    companion object {
+        private const val REPRESENTATIVES = "REPRESENTATIVES"
     }
 }
