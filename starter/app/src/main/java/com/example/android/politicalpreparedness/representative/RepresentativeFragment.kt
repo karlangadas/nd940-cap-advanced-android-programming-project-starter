@@ -103,11 +103,20 @@ class DetailFragment : Fragment() {
 
         binding.buttonLocation.setOnClickListener {
             checkLocationPermissionsAndUseMyLocation()
+            clearFocus()
         }
         binding.buttonSearch.setOnClickListener {
             checkLocationPermissionsAndUseFields()
+            clearFocus()
         }
         return binding.root
+    }
+
+    private fun clearFocus() {
+        binding.addressLine1.clearFocus();
+        binding.addressLine2.clearFocus();
+        binding.city.clearFocus();
+        binding.zip.clearFocus();
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -122,7 +131,6 @@ class DetailFragment : Fragment() {
         super.onSaveInstanceState(outState)
         viewModel.saveState()
         outState.putBundle(MOTION_LAYOUT_STATE_KEY, binding.motionLayout.transitionState)
-        hideKeyboard()
     }
 
     //https://www.geeksforgeeks.org/spinner-in-kotlin/
